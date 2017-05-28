@@ -8,6 +8,7 @@
               <div class="panel panel-success">
                 <div class="panel-heading"><a href="{{ url('/thread/' . $thread->id) }}">{{ $thread->title }}</a> by {{ $thread->user->name }}</div>
 
+{{--test--}}
                 <div class="panel-body">
                   {{ $thread->body }}
                 </div>
