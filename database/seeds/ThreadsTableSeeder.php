@@ -11,10 +11,12 @@ class ThreadsTableSeeder extends Seeder
      */
     public function run()
     {
-        $threads = factory(App\Thread::class, 10)->create();
+      $threads = factory(App\Thread::class, 10)->create();
 
-        $threads->each(function ($thread) {
-          factory(App\Reply::class, 10)->create(['thread_id' => $thread->id]);
-        });
+//      $users = App\User::class->get()->all();
+
+      $threads->each(function ($thread) {
+        factory(App\Reply::class, 10)->create(['thread_id' => $thread->id]);
+      });
     }
 }

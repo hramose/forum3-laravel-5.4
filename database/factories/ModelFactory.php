@@ -17,6 +17,8 @@ use App\User;
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     static $password;
 
+//    $password = false;
+
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
@@ -25,7 +27,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Thread::class, function(Faker\Generator $faker) {
+$factory->define(App\Thread::class, function (Faker\Generator $faker) {
   return [
     'user_id' => function () {
       return factory('App\User')->create()->id;
@@ -35,11 +37,10 @@ $factory->define(App\Thread::class, function(Faker\Generator $faker) {
   ];
 });
 
-$factory->define(App\Reply::class, function(Faker\Generator $faker) {
+$factory->define(App\Reply::class, function (Faker\Generator $faker) {
   return [
     'thread_id' => 1,
     'user_id' => User::all()->random()->id,
     'body' => $faker->paragraph
   ];
 });
-

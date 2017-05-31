@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\thread;
+use App\Thread;
 use App\Reply;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ThreadController extends Controller
 {
@@ -15,7 +16,7 @@ class ThreadController extends Controller
      */
     public function index()
     {
-      $threads = Thread::all();
+      $threads = Thread::orderBy('created_at', 'desc')->paginate(10);
 
       return view('forum.index')->with(compact('threads'));
     }
@@ -27,7 +28,7 @@ class ThreadController extends Controller
      */
     public function create()
     {
-        //
+        return view('forum.createThread');
     }
 
     /**
@@ -38,18 +39,34 @@ class ThreadController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $thread = new Thread;
+
+        $threadTitle = $request->threadTitle;
+        $threadBody = $request->threadBody;
+        $threadUserID = Auth::id();
+
+        $thread->user_id = $threadUserID;
+        $thread->title = $threadTitle;
+        $thread->body = $threadBody;
+
+        $thread->save();
+
+        $request->session()->flash('newThreadSuccessfullySaved', $threadTitle);
+
+        return redirect()->route('forumHome');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\thread  $thread
+     * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function show(thread $thread)
+    public function show(Thread $thread)
     {
-      $replies = Reply::where('thread_id', $thread->id)->get();
+//      $replies = $thread->replies->orderBy('created_at', 'desc')->paginate(10);
+
+      $replies = Reply::where('thread_id', $thread->id)->orderBy('created_at', 'desc')->paginate(10);
 
       return view('forum.singleThread')->with(compact('thread'))->with(compact('replies'));
     }
@@ -57,10 +74,10 @@ class ThreadController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\thread  $thread
+     * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function edit(thread $thread)
+    public function edit(Thread $thread)
     {
         //
     }
@@ -69,10 +86,10 @@ class ThreadController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\thread  $thread
+     * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, thread $thread)
+    public function update(Request $request, Thread $thread)
     {
         //
     }
@@ -80,10 +97,10 @@ class ThreadController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\thread  $thread
+     * @param  \App\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function destroy(thread $thread)
+    public function destroy(Thread $thread)
     {
         //
     }

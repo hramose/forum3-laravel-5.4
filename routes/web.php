@@ -11,10 +11,16 @@
 |
 */
 
-Route::get('/', 'ThreadController@index');
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
 Auth::routes();
+
+Route::get('/', 'ThreadController@index')->name('forumHome');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/thread', 'ThreadController');
+Route::resource('/reply', 'ReplyController');
+Route::put('/reply/solution/{threadID}/{replyID}', 'ReplyController@makeReplySolution')->name('reply.makeReplySolution');
