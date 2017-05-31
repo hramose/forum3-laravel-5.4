@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\thread;
+use App\Thread;
 use App\Reply;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ThreadController extends Controller
 {
@@ -15,7 +16,7 @@ class ThreadController extends Controller
      */
     public function index()
     {
-      $threads = Thread::all();
+      $threads = Thread::orderBy('created_at', 'desc')->paginate(10);
 
       return view('forum.index')->with(compact('threads'));
     }
@@ -27,7 +28,7 @@ class ThreadController extends Controller
      */
     public function create()
     {
-        //
+        return view('forum.threadCreate');
     }
 
     /**
@@ -38,7 +39,17 @@ class ThreadController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $thread = new Thread;
+
+      $thread->user_id = Auth::id();
+      $thread->title = $request->threadTitle;
+      $thread->body = $request->threadBody;
+
+      $thread->save();
+
+      $request->session()->flash('newThreadSuccessfullySaved', 'Your new thread titled ' . $thread->title . ' has been successfully saved. Enjoy the Forum! :)');
+
+      return redirect()->route('forumHomee');
     }
 
     /**

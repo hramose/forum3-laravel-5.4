@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Reply;
+use App\Thread;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReplyController extends Controller
 {
@@ -35,7 +37,17 @@ class ReplyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $reply = new Reply;
+
+      $reply->user_id = Auth::id();
+      $reply->thread_id = $request->threadID;
+      $reply->body = $request->replyBody;
+
+      $reply->save();
+
+      $request->session()->flash('newReplySuccessfullySaved', 'Your reply has been successfully stored and is now visible on the website.');
+
+      return redirect()->back();
     }
 
     /**
@@ -70,6 +82,18 @@ class ReplyController extends Controller
     public function update(Request $request, Reply $reply)
     {
         //
+    }
+
+    public function makeReplySolution(Request $request, $threadID, $replyID) {
+      $thread = Thread::find($threadID);
+      $thread->solution_reply_id = $replyID;
+      $thread->save();
+
+      $reply = Reply::find($replyID);
+
+      $request->session()->flash('replySolutionsUpdated', 'Reply #' . $replyID . ' by ' . $reply->user->name . ' has been successfully chosen as the solution.');
+
+      return redirect()->route('thread.show', ['thread' => $threadID]);
     }
 
     /**
